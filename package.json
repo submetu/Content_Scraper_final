@@ -22,7 +22,6 @@
   "homepage": "https://github.com/submetu/Content_Scraper#readme",
   "dependencies": {
     "async": "^2.0.1",
-    "bluebird": "^3.4.6",
     "cheerio": "^0.22.0",
     "fast-csv": "^2.3.0",
     "mkdirp": "^0.5.1",
