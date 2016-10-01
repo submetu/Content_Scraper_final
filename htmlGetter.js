@@ -4,17 +4,19 @@ var http = require('http'),
 function sendRequest(id,callback){
 	http.get('http://www.shirts4mike.com/shirt.php?id='+id,function(response){
 		var body = '';
-	if(response.statusCode !== 200){
-		callback(new Error("No response from the server. Status code error of: " + response.statusCode));
-	}
-	response.on('data',function(chunk){
-		body+=chunk;
-	});
-	if(response.statusCode ===200){
-		response.on('end',function(){
-			callback(null,body);
+		if(response.statusCode !== 200){
+			callback(new Error("No response from the server. Status code error of: " + response.statusCode));
+		}
+		response.on('data',function(chunk){
+			body+=chunk;
 		});
-	}
+		if(response.statusCode ===200){
+			response.on('end',function(){
+				callback(null,body);
+			});
+		}
+	}).on('error',function(err){
+		callback(err);
 	});
 }
 function complileData(callback){

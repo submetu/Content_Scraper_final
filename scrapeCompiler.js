@@ -62,12 +62,15 @@ function loadData(data,callback){
 		},
 		function(urlArr,cb){
 			mainArr.push(urlArr);
-			urlArr.forEach(function(elem){
+			urlArr.forEach(function(elem){ 
 				if(elem !== 'URL'){
 					var date = new Date();
-					var timeData = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear() + ' ' 
-								+ date.getHours() + ':' + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes() 
-								+ ':' + date.getSeconds();
+					var timeData =  date.getFullYear()
+									+ '-' + (date.getMonth() < 10 ? "0" : "") + date.getMonth() 
+									+ '-' + (date.getDate() < 10 ? "0" : "") + date.getDate() + ' ' 
+									+ date.getHours() + ':' + (date.getMinutes() < 10 ? "0" : "") 
+									+ date.getMinutes() 
+									+ ':' + (date.getSeconds() < 10 ? "0" : "") + date.getSeconds();
 					timeArr.push(timeData);
 				}
 				
