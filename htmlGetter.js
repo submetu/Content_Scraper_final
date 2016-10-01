@@ -1,5 +1,5 @@
-var http = require('http');
-var async = require('async');
+var http = require('http'),
+	async = require('async');
 
 function sendRequest(id,callback){
 	http.get('http://www.shirts4mike.com/shirt.php?id='+id,function(response){
@@ -71,7 +71,8 @@ function complileData(callback){
 			data+=body;
 			callback(null,data);
 		}
-		],function(err,results){
+		],
+		function(err,results){
 		if(err){
 			console.log(err.stack);
 		}
@@ -79,10 +80,5 @@ function complileData(callback){
 			callback(null,results);
 		}
 	});
-	
 }
 module.exports = complileData;
-
-
-
-

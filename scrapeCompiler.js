@@ -1,24 +1,28 @@
 var cheerio = require('cheerio'),
 	async   = require('async'),
-	getData = require('./test.js');
+	getData = require('./htmlGetter');
 
+//a function to make the code more readable. This function is called in the getData() function later
 function LoadData(data){
+	//function that takes in a callback function that gives us the main array full of scraped data
 	loadData(data,function(err,mainArr){
 		if(err){
 			console.log(err.stack);
 		}
 		else{
-			console.log(mainArr);
+			return mainArr;
 		}
 	});
 }
+//function that prepares a main array filled with all the required scraped data
 function loadData(data,callback){
-	var mainArr = [];
-	var titleArr = [];
-	var priceArr = [];
-	var imgUrlArr = [];
-	var urlArr = [];
-	var timeArr = [];
+	var mainArr   = [];
+	var titleArr  = ['Title'];
+	var priceArr  = ['Price'];
+	var imgUrlArr = ['ImageUrl'];
+	var urlArr 	  = ['URL'];
+	var timeArr   = ['Time'];
+	//the scraper module loading the html data of all the shirt pages
 	var $ = cheerio.load(data);
 	async.waterfall([
 		function(cb){
@@ -47,21 +51,26 @@ function loadData(data,callback){
 		function(imgUrlArr,cb){
 			mainArr.push(imgUrlArr);
 			imgUrlArr.forEach(function(elem){
-				elem = elem.replace('img/shirts/shirt-','');
-				elem = parseInt(elem,10);
-				var url = 'http://www.shirts4mike.com/shirt.php?id='+elem;
-				urlArr.push(url);
+				if(elem !== 'ImageUrl'){
+					elem = elem.replace('img/shirts/shirt-','');
+					elem = parseInt(elem,10);
+					var url = 'http://www.shirts4mike.com/shirt.php?id='+elem;
+					urlArr.push(url);
+				}
 			});
 			cb(null,urlArr);
 		},
 		function(urlArr,cb){
 			mainArr.push(urlArr);
 			urlArr.forEach(function(elem){
-				var date = new Date();
-				var timeData = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear() + ' ' 
+				if(elem !== 'URL'){
+					var date = new Date();
+					var timeData = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear() + ' ' 
 								+ date.getHours() + ':' + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes() 
 								+ ':' + date.getSeconds();
-				timeArr.push(timeData);
+					timeArr.push(timeData);
+				}
+				
 			});
 			cb(null,timeArr);
 		},
@@ -80,12 +89,27 @@ function loadData(data,callback){
 	});
 }
 
-getData(function(err,data){
-	if(err){
-		console.log(err.stack);
-	}
-	else{
-		LoadData(data);
-	}
-});
+/*  main invoking function that gets the html from htmlGetter.js invokes the loadData function to make mainArr 
+	and checks for errors 
+*/
+function getMainArray(callback){
+	getData(function(err,data){
+		if(err){
+			console.log(err.stack);
+		}
+		else{
+			loadData(data,function(err,mainArr){
+				if(err){
+					callback(err);
+				}
+				else{
+					callback(null,mainArr);
+				}
+			});
+		}
+	});
+}
+
+
+module.exports = getMainArray;
 
