@@ -74,7 +74,14 @@ function complileData(callback){
 		},
 		function(body,cb){
 			data+=body;
-			callback(null,data); //if there is no error along the way pass the total html string to the callback
+			//if the body is not undefined, i.e. the server responded with valid data
+			if(body){
+				callback(null,data); //if there is no error along the way pass the total html string to the callback
+			}
+			//if the server is not responding or your connection is not working
+			else{
+				callback("The server did not respond or your network connection is not working. Please try again.");
+			}	
 		}
 		],
 		function(err,results){
