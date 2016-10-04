@@ -1,9 +1,11 @@
 var http = require('http'),
-	async = require('async');
+	async = require('async'),
+	cheerio = require('cheerio'),
+	each = require('async-each-series');;
 
-//function that sends an http request to an address with the argument of 'id' and has a callback argument
-function sendRequest(id,callback){
-	http.get('http://www.shirts4mike.com/shirt.php?id='+id,function(response){
+//function that sends an http request to an address  and has a callback argument
+function sendRequest(path,callback){
+	http.get(path,function(response){
 		var body = '';
 		if(response.statusCode !== 200){ //if the server doesn't repsond
 			callback(new Error("No response from the server. Status code error of: " + response.statusCode));
@@ -20,77 +22,55 @@ function sendRequest(id,callback){
 		callback(err); //invoke the callback with an error
 	});
 }
-
-function complileData(callback){
-	var data='';
-	//async.waterfall gets the callbacks in the array in a squential order. It handles errors in every callback at the end
-	async.waterfall([
-		function(cb){
-			sendRequest('101',function(err,body){
-				cb(null,body);
-			});
-		},
-		function(body,cb){
-			data+=body; //adds the html string to data
-			sendRequest('102',function(err,body){
-				cb(null,body);
-			});
-		},
-		function(body,cb){
-			data+=body; //adds the html string to data
-			sendRequest('103',function(err,body){
-				cb(null,body);
-			});
-		},
-		function(body,cb){
-			data+=body;
-			sendRequest('104',function(err,body){
-				cb(null,body);
-			});
-		},
-		function(body,cb){
-			data+=body;
-			sendRequest('105',function(err,body){
-				cb(null,body);
-			});
-		},
-		function(body,cb){
-			data+=body;
-			sendRequest('106',function(err,body){
-				cb(null,body);
-			});
-		},
-		function(body,cb){
-			data+=body;
-			sendRequest('107',function(err,body){
-				cb(null,body);
-			});
-		},
-		function(body,cb){
-			data+=body;
-			sendRequest('108',function(err,body){
-				cb(null,body);
-			});
-		},
-		function(body,cb){
-			data+=body;
-			//if the body is not undefined, i.e. the server responded with valid data
-			if(body){
-				callback(null,data); //if there is no error along the way pass the total html string to the callback
-			}
-			//if the server is not responding or your connection is not working
-			else{
-				callback("The server did not respond or your network connection is not working. Please try again.");
-			}	
-		}
-		],
-		function(err,results){
+//gets all the shirt urls and saves them into an array
+function getShirtUrls(callback){
+	var shirtUrlArray = [];
+	//the http request to the page where there are all the shirts
+	sendRequest('http://www.shirts4mike.com/shirts.php',function(err,body){
 		if(err){
+			//if there was an error just send an error to the callback
 			callback(err);
 		}
 		else{
-			callback(null,results);
+			//loads the scraper
+			var $ = cheerio.load(body);
+			//gets all the anchor tags' href attributes and pushes them into the shirtUrlArray
+			$('ul.products a').each(function(){
+				var path = 'http://www.shirts4mike.com/'+$(this).attr('href');
+				shirtUrlArray.push(path);
+			});
+			//no error and the array passed to the callback upon success
+			callback(null,shirtUrlArray);
 		}
 	});
 }
-module.exports = complileData;
+
+
+
+//the compile function that sends http requests to the shirt urls gotten from the getShirtUrls function. 
+//This function puts all the html from the shirt pages into a variable called html
+function compile(callback){
+	getShirtUrls(function(err,shirtUrlArray){
+	if(err){
+		callback(err.stack);
+	}
+	else{
+		var html = '';
+		//the npm module called async-each-series used to send http requests to each url in the shirtUrlArray in a sequence
+		each(shirtUrlArray, function(el, next) {
+		    sendRequest(el,function(err,file){
+		    	html+=file;
+		    	next();
+		    });
+		}, function (err) {
+			if(err){
+				callback(err);
+			}
+		  //upon success, we pass an error of null and the html string containing all html from all shirt pages 
+		  callback(null,html);
+		});	
+	}
+});
+}
+
+module.exports = compile;

@@ -104,6 +104,7 @@ function getMainArray(callback){
 			callback(err);
 		}
 		else{
+			//pass the data(the html string of all the shirt pages) and the callback function
 			LoadData(data,callback);
 		}
 	});

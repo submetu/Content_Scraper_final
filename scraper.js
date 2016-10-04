@@ -1,3 +1,14 @@
+/*
+This fast-csv generator was used because a release occured about a week ago. The package is on its 2.3.0 release.It
+had a total of 36 releases and over 62k downloads in the past month. There are only 37 issues open on github as compared
+to the other csv generators which is very less. Also on its github page it has 26 contributors and 148 commits.
+ */
+/*
+The scraper of cheerio was used because its syntax is very easy to use. With just one command (cheerio.load()), you can 
+load the html to be scraped. After that, you can select specific elements on that html with jquery selectors i.e. css selectors.
+ */
+
+
 var mkdirp = require('mkdirp'),
 	csv    = require('fast-csv'),
 	fs 	   = require('fs'),
@@ -26,7 +37,7 @@ prompt(function(err,results){
 		    else{
 		   		getMainArray(function(err,mainArr){
 					if(err){
-						console.log(err);
+						console.log(err,"\n\nSomething went wrong, check your connection and try again");
 					}
 					else{
 						var mainArrRemapped=[];
