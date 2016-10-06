@@ -18,8 +18,7 @@ var mkdirp = require('mkdirp'),
 
 //get the date right now
 var date = new Date();
-var dateData = date.getFullYear() + '-' + (date.getMonth() < 10 ? "0" : "") + date.getMonth() + '-' 
-			   +  (date.getDate() < 10 ? "0" : "") + date.getDate();
+var dateData = date.getFullYear() + '-' + (date.getMonth() < 10 ? "0" : "") + date.getMonth() + '-' +  (date.getDate() < 10 ? "0" : "") + date.getDate();
 
 console.log('Enter the hour and minute (in 24-hours) at which you want the scrape to happen everyday');
 //the prompt function that takes a callback that gets the hours and minutes from the user at the start of the program

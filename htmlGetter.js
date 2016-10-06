@@ -1,7 +1,6 @@
 var http = require('http'),
-	async = require('async'),
 	cheerio = require('cheerio'),
-	each = require('async-each-series');;
+	each = require('async-each-series');
 
 //function that sends an http request to an address  and has a callback argument
 function sendRequest(path,callback){
