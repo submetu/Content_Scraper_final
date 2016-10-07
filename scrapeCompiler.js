@@ -1,6 +1,6 @@
 var cheerio = require('cheerio'),
 	async   = require('async'),
-	getData = require('./htmlGetter');
+	getData = require('./ShirtHandler');
 
 
 //function that prepares a main array filled with all the required scraped data
@@ -98,7 +98,7 @@ function LoadData(data,callback){
 	and checks for errors 
 */
 function getMainArray(callback){
-	//the callback function that gets the html string data from htmlGetter.js
+	//the callback function that gets the html string from htmlGetter.js
 	getData(function(err,data){
 		if(err){
 			callback(err);
