@@ -21,6 +21,18 @@ function sendRequest(path,callback){
 		callback(err); //invoke the callback with an error
 	});
 }
+
+
+
+
+
+
+
+
+
+
+
+
 //gets all the shirt urls and saves them into an array
 function getShirtUrls(callback){
 	var shirtUrlArray = [];
