@@ -24,6 +24,7 @@
     "async": "^2.0.1",
     "cheerio": "^0.22.0",
     "fast-csv": "^2.3.0",
+    "async-each-series": "^1.1.0",
     "mkdirp": "^0.5.1",
     "node-schedule": "^1.1.1",
     "prompt": "^1.0.0"
